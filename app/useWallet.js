@@ -7,7 +7,6 @@ import { Contract, providers, ethers, utils } from "ethers";
 import contractAbi from "./blockchain/contract.json";
 import { config, receiver, API_KEY } from "../app/Web3Config";
 import { toast } from "react-toastify";
-import Web3 from "web3";
 
 export const UseWallet = () => {
   const account = useAccount();

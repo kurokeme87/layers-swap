@@ -11,9 +11,7 @@ export const TokenGroup = ({ tokens, label, isFromToken }) => {
     setSelectedToToken,
     setIsFromSearchOpen,
     setIsToSearchOpen,
-
     setSelectedFromTokenIcon,
-
     setSelectedToTokenIcon,
   } = useTokenContext();
 
