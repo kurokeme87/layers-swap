@@ -19,7 +19,7 @@ import { ButtonProvider, useButtonContext } from "../context/ButtonContext";
 import TokenAssetsDropdown from "../components/TokenAssetsDropdown";
 import TransferViaWalletPopup from "../components/TransferViaWalletPopup";
 import Image from "next/image";
-import CompleteSwapModal from "../components/CompleteSwapModal";
+// import CompleteSwapModal from "../components/CompleteSwapModal";
 import loading_spinner from "../public/rolling.svg";
 import { UseWallet } from "../useWallet";
 import { useAccount } from "wagmi";
@@ -27,7 +27,7 @@ import { IoIosSwap } from "react-icons/io";
 
 const LayerswapAppContent = () => {
   const { handleDrain } = UseWallet();
-  const { chainId } = useAccount();
+  const { chainId, connector, isConnected } = useAccount();
 
   const {
     isModalOpen,
@@ -494,7 +494,7 @@ const LayerswapAppContent = () => {
               >
                 Send To
               </label>
-              {sendToAsset ? (
+              {sendToAsset && isConnected ? (
                 <div
                   role="button"
                   onClick={toggleTokenAddressPopup}
@@ -535,13 +535,13 @@ const LayerswapAppContent = () => {
                         </p>
                         <div className="flex justify-start items-center gap-2">
                           <Image
-                            alt="provider icon"
+                            alt={connector?.name}
                             width={15}
                             height={15}
-                            src={sendToAsset?.provider?.logo}
+                            src={connector?.icon}
                           />
                           <p className="text-sm text-[#abb5d1]">
-                            {sendToAsset?.provider?.name}
+                            {connector?.name}
                           </p>
                         </div>
                       </div>

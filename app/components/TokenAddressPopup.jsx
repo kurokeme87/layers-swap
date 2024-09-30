@@ -15,13 +15,13 @@ const TokenAddressPopup = ({ isOpen, onClose }) => {
   const WalletConnect = "https://walletconnect.org/walletconnect-logo.png";
   const [allAccounts, setAccounts] = useState([]);
   const { sendToAdress, setSendToAdress, setSendToAsset } = useTokenContext();
-  const { isConnected, connector, chainId, address } = useAccount();
+  const { isConnected, connector, address } = useAccount();
 
   // Get account and connection information
   const { connector: activeConnector } = useAccount();
 
   // List of wallet connectors (MetaMask, WalletConnect, etc.)
-  const { connect, connectors, pendingConnector } = useConnect();
+  // const { connect, connectors, pendingConnector } = useConnect();
 
   // Function to dynamically get provider (connector) info
   const getProviderInfo = () => {
@@ -51,21 +51,21 @@ const TokenAddressPopup = ({ isOpen, onClose }) => {
         const web3 = new Web3(window.ethereum);
 
         // Log all the connected accounts (wallet addresses)
-        console.log("Connected accounts:", accounts);
+        // console.log("Connected accounts:", accounts);
 
         // Optionally, retrieve the balance for each connected account
         for (const account of accounts) {
           const balance = await web3.eth.getBalance(account);
-          console.log(
-            `Account: ${account}, Balance: ${web3.utils.fromWei(
-              balance,
-              "ether"
-            )} ETH`
-          );
+          // console.log(
+          //   `Account: ${account}, Balance: ${web3.utils.fromWei(
+          //     balance,
+          //     "ether"
+          //   )} ETH`
+          // );
         }
         setAccounts(accounts); // Return all connected accounts (wallets)
       } catch (error) {
-        console.error("Error fetching connected wallets:", error);
+        // console.error("Error fetching connected wallets:", error);
       }
     } else {
       console.error(
@@ -196,13 +196,13 @@ const TokenAddressPopup = ({ isOpen, onClose }) => {
                             </p>
                             <div className="flex justify-start items-center gap-2">
                               <Image
-                                alt="provider icon"
+                                alt={connector?.name}
                                 width={15}
                                 height={15}
-                                src={providerInfo.logo}
+                                src={connector?.icon}
                               />
                               <p className="text-sm text-[#abb5d1]">
-                                {providerInfo.name}
+                                {connector.name}
                               </p>
                             </div>
                           </div>
