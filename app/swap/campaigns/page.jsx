@@ -1,4 +1,4 @@
-'use client'
+"use client";
 
 import React from "react";
 import { BiCommentDetail } from "react-icons/bi";
@@ -31,7 +31,7 @@ const CampaignsPageContent = () => {
       <div className="container mx-auto md:w-[35%] relative">
         <div className="md:bg-[#0c1526] w-full p-6 rounded-md mt-5 h-[600px]">
           <div className="flex items-center justify-between mb-1">
-            <Link href="/subpage">
+            <Link href="/swap">
               <FaArrowLeft className="text-lg text-white text-opacity-80" />
             </Link>
             <div className="space-x-5 text-[21px] text-white text-opacity-80">
@@ -72,7 +72,9 @@ const CampaignsPageContent = () => {
             </div>
           </div>
 
-          <h2 className="text-sm md:text-base font-bold mb-4 text-white">Campaigns</h2>
+          <h2 className="text-sm md:text-base font-bold mb-4 text-white">
+            Campaigns
+          </h2>
 
           <div className="bg-[#111c36] rounded-md p-3 mb-4">
             <div className="flex items-center justify-between">
@@ -86,7 +88,9 @@ const CampaignsPageContent = () => {
             </div>
           </div>
 
-          <h3 className="text-sm md:text-base font-bold mb-4 text-white">Old campaigns</h3>
+          <h3 className="text-sm md:text-base font-bold mb-4 text-white">
+            Old campaigns
+          </h3>
 
           <div className="bg-[#111c36] rounded-md p-3 space-y-4">
             {[

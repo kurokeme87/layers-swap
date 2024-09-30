@@ -3,13 +3,13 @@ import React from "react";
 import layerswapLogo from "../public/layerswap_logo.png";
 
 const SubpageHeader = () => {
-
   return (
     <div className="font-sans flex items-center justify-center">
       <Image
         src={layerswapLogo}
         alt="layer"
         height={80}
+        priority
         width={80}
         className="h-[50px] w-[50px] md:h-16 md:w-16"
       />

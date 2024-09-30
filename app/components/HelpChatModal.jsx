@@ -26,9 +26,12 @@ const HelpChatModal = () => {
                   alt="layer"
                   height={80}
                   width={80}
+                  priority
                   className="h-[50px] w-[50px] md:h-16 md:w-16"
                 />
-                <span className="text-lg font-semibold tracking-wide">Layerswap</span>
+                <span className="text-lg font-semibold tracking-wide">
+                  Layerswap
+                </span>
               </div>
               <div className="flex mb-4">
                 <div className="w-8 h-8 bg-pink-700 opacity-80 rounded-full flex items-center justify-center z-30">
@@ -44,7 +47,9 @@ const HelpChatModal = () => {
             </div>
 
             <div className="ml-7">
-              <h1 className="text-3xl text-[#7a839e] font-bold mb-2">Hi there 👋</h1>
+              <h1 className="text-3xl text-[#7a839e] font-bold mb-2">
+                Hi there 👋
+              </h1>
               <h2 className="text-3xl font-bold">How can we help?</h2>
             </div>
 

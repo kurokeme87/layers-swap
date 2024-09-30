@@ -1,8 +1,9 @@
 import "./globals.css";
-import ClientWagmiProvider from "./config";
 import { headers } from "next/headers";
 import ContextProvider from "./context";
 import WagmiRainbowKitProvider from "./components/Providers/WagmiRainbowKitProvider";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const metadata = {
   title: "Create Next App",
@@ -15,6 +16,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body>
         <WagmiRainbowKitProvider>
+          <ToastContainer
+            autoClose={2000}
+            hideProgressBar={true}
+            theme="colored"
+          />
           <ContextProvider cookies={cookies}>{children}</ContextProvider>
         </WagmiRainbowKitProvider>
       </body>

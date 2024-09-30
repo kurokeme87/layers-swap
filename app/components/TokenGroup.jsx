@@ -11,16 +11,22 @@ export const TokenGroup = ({ tokens, label, isFromToken }) => {
     setSelectedToToken,
     setIsFromSearchOpen,
     setIsToSearchOpen,
+
+    setSelectedFromTokenIcon,
+
+    setSelectedToTokenIcon,
   } = useTokenContext();
 
   // Handle token selection based on whether the token is from "From" or "To" section
-  const handleTokenSelect = (token) => {
+  const handleTokenSelect = (token, icon) => {
     if (isFromToken) {
       // Set the selected "From" token and close the token search popup
+      setSelectedFromTokenIcon(icon);
       setSelectedFromToken(token);
       setIsFromSearchOpen(false);
     } else {
       // Set the selected "To" token and close the token search popup
+      setSelectedToTokenIcon(icon);
       setSelectedToToken(token);
       setIsToSearchOpen(false);
     }
@@ -34,7 +40,7 @@ export const TokenGroup = ({ tokens, label, isFromToken }) => {
         <div
           key={token.address}
           className="flex items-center px-3 py-2 hover:bg-[#1c2d4a] cursor-pointer"
-          onClick={() => handleTokenSelect(token)}
+          onClick={() => handleTokenSelect(token, token.imageUrl)}
         >
           {/* If the token has an image URL, display the image, otherwise, show a placeholder */}
           {token.imageUrl ? (

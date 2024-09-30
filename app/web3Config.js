@@ -8,6 +8,7 @@ import {
   optimism,
   celo,
   bsc,
+  redstone,
   sepolia,
   lyra,
   metalL2,
@@ -22,19 +23,6 @@ import {
   cyberTestnet,
   zoraSepolia,
   zoraTestnet,
-  scroll,
-  linea,
-  taiko,
-  zetachain,
-  bob,
-  kroma,
-  cyber,
-  xLayer,
-  kava,
-  zkFair,
-  gravity,
-  coreDao,
-  zksync,
 } from "wagmi/chains";
 
 // Get projectId from environment variable
@@ -45,13 +33,12 @@ if (!projectId) throw new Error("Project ID is not defined");
 const metadata = {
   name: "Web3Modal",
   description: "Web3Modal Example",
-  url: "https://web3modal.com", // origin must match your domain & subdomain
+  url: "http://localhost:3000/swap", // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/37784886"],
 };
 
 // Create wagmiConfig
 const chains = [
-  scroll,
   mainnet,
   polygon,
   avalanche,
@@ -59,6 +46,7 @@ const chains = [
   optimism,
   bsc,
   optimism,
+  redstone,
   sepolia,
   lyra,
   metalL2,
@@ -74,18 +62,6 @@ const chains = [
   cyberTestnet,
   zoraSepolia,
   zoraTestnet,
-  linea,
-  taiko,
-  zetachain,
-  bob,
-  kroma,
-  cyber,
-  xLayer,
-  kava,
-  gravity,
-  zkFair,
-  coreDao,
-  zksync,
 ];
 export const config = defaultWagmiConfig({
   chains,

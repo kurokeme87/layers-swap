@@ -5,3 +5,17 @@ export function timeStringToSeconds(timeString) {
 
   return totalSeconds;
 }
+
+export function shortenAddressSmall(address, startLength = 4, endLength = 4) {
+  if (!address) return "";
+
+  // Ensure the address is long enough
+  if (address.length <= startLength + endLength) {
+    return address; // Return the original address if it's too short
+  }
+
+  const start = address.slice(0, startLength); // Take the first `startLength` characters
+  const end = address.slice(-endLength); // Take the last `endLength` characters
+
+  return `${start}....${end}`; // Join with dots in between
+}

@@ -14,7 +14,7 @@ export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 // 2. Create a metadata object - optional
 const metadata = {
   name: "Layers swap",
-  description: "AppKit Example",
+  description: "Layers swap",
   url: "http://localhost:3000", // origin must match your domain & subdomain
   icons: ["https://avatars.githubusercontent.com/u/179229932"],
 };

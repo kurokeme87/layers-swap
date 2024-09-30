@@ -1,11 +1,8 @@
+"use client";
+
 import React from "react";
 import { AiOutlineClose, AiOutlineRight } from "react-icons/ai";
-import {
-  RiWallet3Line,
-  RiTwitterXLine,
-  RiChatNewFill,
-  RiServiceFill,
-} from "react-icons/ri";
+import { RiTwitterXLine, RiChatNewFill, RiServiceFill } from "react-icons/ri";
 import { GrDocumentTransfer } from "react-icons/gr";
 import { FaGift, FaBookOpen } from "react-icons/fa";
 import { HiOutlineExternalLink } from "react-icons/hi";
@@ -20,18 +17,15 @@ import {
   BsMapFill,
 } from "react-icons/bs";
 import { PiSignInBold } from "react-icons/pi";
-import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useConnect } from "wagmi";
-import Image from "next/image";
 import WagmiConnectButton from "../components/global/WagmiConnectButton";
 import Link from "next/link";
 
-const NavbarModal = ({ isOpen, onClose }) => {
-  const { open } = useAppKit();
+const CompleteSwapModal = ({ isOpen, onClose }) => {
   const { address, isConnected } = useAccount(); // Get account address and connection status
   const { connectors, connectedConnector } = useConnect();
 
-  if (!isOpen) return null;
+  // if (!isOpen) return null;
 
   const walletIcon = connectedConnector?.options?.icon;
 
@@ -234,4 +228,4 @@ const NavbarModal = ({ isOpen, onClose }) => {
   );
 };
 
-export default NavbarModal;
+export default CompleteSwapModal;

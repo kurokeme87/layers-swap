@@ -11,6 +11,7 @@ export const LandingPageNavbar = () => {
             alt="layer"
             height={80}
             width={80}
+            priority
             className="h-[50px] w-[50px] md:h-[60px] md:w-[60px]"
           />
           <h2 className="text-[#e5e7eb] font-semibold tracking-wide text-lg md:text-xl">

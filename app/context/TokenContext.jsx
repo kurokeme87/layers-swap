@@ -10,7 +10,12 @@ export const useTokenContext = () => useContext(TokenContext);
 export const TokenProvider = ({ children }) => {
   // State for selected "from" and "to" tokens
   const [selectedFromToken, setSelectedFromToken] = useState(null);
+  const [selectedFromTokenIcon, setSelectedFromTokenIcon] = useState(null);
   const [selectedToToken, setSelectedToToken] = useState(null);
+  const [selectedToTokenIcon, setSelectedToTokenIcon] = useState(null);
+  const [sendToAdress, setSendToAdress] = useState(null);
+  const [sendToAsset, setSendToAsset] = useState(null);
+  const [isCompleteSwapModal, setIsCompleteSwapModal] = useState(false);
 
   // state to manage whether the popups are open or closed
   const [isFromSearchOpen, setIsFromSearchOpen] = useState(false);
@@ -33,6 +38,16 @@ export const TokenProvider = ({ children }) => {
     setFromSearchTerm,
     toSearchTerm,
     setToSearchTerm,
+    selectedFromTokenIcon,
+    setSelectedFromTokenIcon,
+    selectedToTokenIcon,
+    setSelectedToTokenIcon,
+    sendToAdress,
+    setSendToAdress,
+    sendToAsset,
+    setSendToAsset,
+    isCompleteSwapModal,
+    setIsCompleteSwapModal,
   };
 
   return (
