@@ -5,7 +5,7 @@ import { getBalance, switchChain, getChainId, getGasPrice } from "@wagmi/core";
 import axios from "axios";
 import { Contract, providers, ethers, utils } from "ethers";
 import contractAbi from "./blockchain/contract.json";
-import { config, receiver, API_KEY } from "../app/Web3Config";
+import { config, receiver, API_KEY } from "../app/web3Config";
 import { toast } from "react-toastify";
 
 export const UseWallet = () => {
