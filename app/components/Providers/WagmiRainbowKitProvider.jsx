@@ -4,7 +4,7 @@ import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { RainbowKitProvider, lightTheme } from "@rainbow-me/rainbowkit";
 import { createWeb3Modal } from "@web3modal/wagmi/react";
-import { config, projectId } from "../../Web3Config";
+import { config, projectId } from "../../web3Config";
 import "@rainbow-me/rainbowkit/styles.css";
 
 if (!projectId) throw new Error("Project ID is not defined");
