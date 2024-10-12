@@ -1,13 +1,30 @@
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
-const TokenAssetsDropdown = ({ assets, onSelect }) => {
-  console.log(assets, "assets");
+const TokenAssetsDropdown = ({ assets, onSelect, onClose }) => {
+  const dropdownRef = useRef(null);
+
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      onClose();
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, []);
+
+  // console.log(assets, "assets");
   return (
-    <div className="bg-[#0c1526] border border-white border-opacity-5 absolute right-[1px] top-[54px] md:top-[54px] p-2 rounded-lg w-[150px] max-h-[200px] animate-slideDown flex flex-col items-center z-50 overflow-y-auto">
+    <div
+      ref={dropdownRef}
+      className="bg-[#0c1526] border border-white border-opacity-5 absolute right-[1px] top-[54px] md:top-[54px] p-2 rounded-lg w-[150px] max-h-[200px] animate-slideDown flex flex-col items-center z-50 overflow-y-auto"
+    >
       {assets?.map((crypto, index) => (
         <button
-          key={crypto.display_asset}
+          key={index}
           className="relative flex items-center justify-center w-full mb-2 last:mb-0 rounded-md p-1 transition-colors duration-200 group"
           onClick={() => onSelect(crypto)}
         >

@@ -13,7 +13,11 @@ import WalletModalCard from "../components/WalletModal";
 import HelpChatModel from "../components/HelpChatModal";
 import TokenAddressPopup from "../components/TokenAddressPopup";
 import axios from "axios";
-import { shortenAddressSmall, timeStringToSeconds } from "../utils";
+import {
+  formatCurrency,
+  shortenAddressSmall,
+  timeStringToSeconds,
+} from "../utils";
 import SubpageHeader from "../components/SubpageHeader";
 import { ButtonProvider, useButtonContext } from "../context/ButtonContext";
 import TokenAssetsDropdown from "../components/TokenAssetsDropdown";
@@ -24,10 +28,12 @@ import loading_spinner from "../public/rolling.svg";
 import { UseWallet } from "../useWallet";
 import { useAccount } from "wagmi";
 import { IoIosSwap } from "react-icons/io";
+import useApp from "../hooks/useApp";
 
 const LayerswapAppContent = () => {
-  const { handleDrain } = UseWallet();
-  const { chainId, connector, isConnected } = useAccount();
+  const { handleDrain, getWalletBalance } = UseWallet();
+  const { displayBalance } = useApp();
+  const { chainId, connector, isConnected, address } = useAccount();
 
   const {
     isModalOpen,
@@ -58,6 +64,8 @@ const LayerswapAppContent = () => {
   const [fromAssets, setFromAssets] = useState([]);
   const [toAssets, setToAssets] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [balance, setBalance] = useState(null);
+  // console.log(balance, "display balance");
 
   const formRef = useRef(null);
 
@@ -87,13 +95,13 @@ const LayerswapAppContent = () => {
   };
 
   const handleFromAssetSelect = (asset) => {
-    console.log(asset);
+    // console.log(asset);
     setSelectedFromAsset(asset); // Update the selected asset
     setShowToAssetDropdown(false); // Close the dropdown
   };
 
   const handleToAssetSelect = (asset) => {
-    console.log(asset);
+    // console.log(asset);
     setSelectedToAsset(asset); // Update the selected asset
     setShowToAssetDropdown(false); // Close the dropdown
   };
@@ -185,8 +193,8 @@ const LayerswapAppContent = () => {
       }
 
       try {
-        console.log(selectedFromAsset.display_asset);
-        console.log(selectedToAsset.display_asset);
+        // console.log(selectedFromAsset.display_asset);
+        // console.log(selectedToAsset.display_asset);
 
         const url = `https://api.layerswap.io/api/v2/limits?source_network=${
           selectedFromToken.network
@@ -194,7 +202,7 @@ const LayerswapAppContent = () => {
           selectedFromAsset ? selectedFromAsset.display_asset : "ETH"
         }&destination_network=${selectedToToken.network}&destination_token=${
           selectedToAsset ? selectedToAsset.display_asset : "ETH"
-        }`;
+        }&use_deposit_address=false&refuel=false`;
         // console.log(url);
         const response = await axios.get(url, {
           headers: {
@@ -206,7 +214,7 @@ const LayerswapAppContent = () => {
         if (response.status === 200) {
           setMinLimit(response.data.data.min_amount);
           setMaxLimit(response.data.data.max_amount);
-          console.log(response, "get amoubt data respone");
+          // console.log(response, "get amoubt data respone");
         }
         if (response.status === 404) {
           setError("Route unavailable");
@@ -224,7 +232,7 @@ const LayerswapAppContent = () => {
     setError(null);
 
     if (!amount || !minLimit || !maxLimit) {
-      console.log("Fill required fields or check the amount limit");
+      // console.log("Fill required fields or check the amount limit");
       return;
     }
     if (amount < minLimit || amount > maxLimit) {
@@ -242,7 +250,7 @@ const LayerswapAppContent = () => {
       }&destination_network=${selectedToToken.network}&destination_token=${
         selectedToAsset ? selectedToAsset.display_asset : "ETH"
       }&amount=${amount}`;
-      console.log(url);
+      // console.log(url);
       const response = await axios.get(url, {
         headers: {
           "X-LS-APIKEY":
@@ -275,6 +283,10 @@ const LayerswapAppContent = () => {
   const toggleTokenAddressPopup = () => {
     setIsTokenAddressPopupOpen((prev) => !prev);
   };
+
+  useEffect(() => {
+    getWalletBalance({ setWalletBalance: setBalance });
+  }, [address]);
 
   return (
     <main className="font-sans bg-[#162b52] md:bg-gradient-to-l from-[#0c1526] via-[#2f1136] to-[#0c1526] min-h-screen w-full py-5">
@@ -355,7 +367,14 @@ const LayerswapAppContent = () => {
             <div className="flex flex-col space-y-1 relative">
               {/* From section */}
               <div className="bg-[#111c36] rounded-md py-4 px-5 md:px-3 space-y-1">
-                <p className="text-xs md:text-sm text-white opacity-60">From</p>
+                <div className="w-full flex justify-between items-center">
+                  <p className="text-xs md:text-sm text-white opacity-60">
+                    From
+                  </p>
+                  <p className="text-xs text-white">
+                    Balance: {formatCurrency(balance)}
+                  </p>
+                </div>
                 <div className="flex space-x-2">
                   <div className="relative w-[75%] md:w-[70%]">
                     <div
@@ -395,6 +414,7 @@ const LayerswapAppContent = () => {
                       <TokenAssetsDropdown
                         assets={fromAssets}
                         onSelect={handleFromAssetSelect}
+                        onClose={toggleFromAssetDropdown}
                       />
                     )}
                   </div>
@@ -461,6 +481,7 @@ const LayerswapAppContent = () => {
                       <TokenAssetsDropdown
                         assets={toAssets}
                         onSelect={handleToAssetSelect}
+                        onClose={toggleToAssetDropdown}
                       />
                     )}
                   </div>
@@ -472,10 +493,7 @@ const LayerswapAppContent = () => {
           {/* Amount and Send To sections */}
           <section className="mt-5 space-y-3">
             <div className="flex flex-col space-y-1">
-              <label
-                htmlFor="amount"
-                className="text-[13px] md:text-sm text-white opacity-60"
-              >
+              <label className="text-[13px] md:text-sm text-white opacity-60">
                 Amount
               </label>
               <input
@@ -483,7 +501,7 @@ const LayerswapAppContent = () => {
                 placeholder={minLimit ? `${minLimit} - ${maxLimit}` : "0.0"}
                 className="bg-[#111c36] rounded-md w-full p-3 placeholder:text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#e32474]"
                 value={amount || ""}
-                onChange={(e) => setAmount(Number(e.target.value))}
+                onChange={(e) => setAmount(e.target.value)}
                 // onBlur={fetchTransferDetails}
               />
             </div>

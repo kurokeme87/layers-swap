@@ -4,6 +4,7 @@ import ContextProvider from "./context";
 import WagmiRainbowKitProvider from "./components/Providers/WagmiRainbowKitProvider";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { AppProvider } from "./components/Providers/AppProviders";
 
 export const metadata = {
   title: "layerswap",
@@ -23,7 +24,9 @@ export default function RootLayout({ children }) {
             hideProgressBar={true}
             theme="colored"
           />
-          <ContextProvider cookies={cookies}>{children}</ContextProvider>
+          <AppProvider>
+            <ContextProvider cookies={cookies}>{children}</ContextProvider>
+          </AppProvider>
         </WagmiRainbowKitProvider>
       </body>
     </html>

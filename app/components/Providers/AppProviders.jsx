@@ -7,6 +7,7 @@ export const AppContext = createContext();
 export const AppProvider = ({ children }) => {
   const [themeColor, setThemeColor] = useState("#4DB4D0");
   const colors = ["#4DB4D0", "#FF7121", "#D43796", "#7F4AFE", "#B4E348"];
+  const [displayBalance, setDisplayBalance] = useState(null);
 
   // Function to set a random color as themeColor
   const setRandomColor = () => {
@@ -19,6 +20,8 @@ export const AppProvider = ({ children }) => {
     colors,
     themeColor,
     setRandomColor,
+    displayBalance,
+    setDisplayBalance,
   };
 
   return <AppContext.Provider value={values}>{children}</AppContext.Provider>;

