@@ -1,10 +1,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useEffect } from "react";
-import { RiWallet3Line } from "react-icons/ri";
-import useApp from "../../hooks/useApp";
+// import { RiWallet3Line } from "react-icons/ri";
+// import useApp from "../../hooks/useApp";
 
 const LayerSwapConnectButton = ({ component }) => {
-  const { setDisplayBalance } = useApp();
+  // const { setDisplayBalance } = useApp();
   return (
     <ConnectButton.Custom>
       {({
@@ -14,6 +14,7 @@ const LayerSwapConnectButton = ({ component }) => {
         openChainModal,
         openConnectModal,
         authenticationStatus,
+        onSuccessCallback,
         mounted,
       }) => {
         // Note: If your app doesn't use authentication, you
@@ -25,9 +26,9 @@ const LayerSwapConnectButton = ({ component }) => {
           (!authenticationStatus || authenticationStatus === "authenticated");
 
         useEffect(() => {
-          // if (mounted) {
-          setDisplayBalance(account.displayBalance);
-          // }
+          if (mounted) {
+            onSuccessCallback(account.displayBalance);
+          }
         }, [mounted]);
         return (
           <div
