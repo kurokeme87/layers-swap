@@ -25,6 +25,7 @@ import { useAccount, useConnect } from "wagmi";
 import Image from "next/image";
 import WagmiConnectButton from "../components/global/WagmiConnectButton";
 import Link from "next/link";
+import LayerSwapConnectButton from "./global/LayerSwapConnectButton";
 
 const NavbarModal = ({ isOpen, onClose }) => {
   const { open } = useAppKit();
@@ -83,7 +84,27 @@ const NavbarModal = ({ isOpen, onClose }) => {
                   </>
                 )}
               </div> */}
-              <WagmiConnectButton />
+              {/* <WagmiConnectButton /> */}
+              <LayerSwapConnectButton
+                component={
+                  <div className="w-full flex">
+                    <RiWallet3Line className="text-white bg-[#381836] text-2xl" />
+
+                    <span className="w-full font-bold text-sm tracking-wide text-center text-[#e32474]">
+                      Connect a wallet
+                    </span>
+                  </div>
+                }
+                connect={
+                  <div className="w-full flex">
+                    <RiWallet3Line className="text-[#e32474] text-2xl" />
+
+                    <span className="w-full font-bold text-sm tracking-wide text-center text-[#e32474]">
+                      Connect a wallet
+                    </span>
+                  </div>
+                }
+              />
 
               <div className="space-y-4 p-4">
                 <div className="bg-[#111c36] rounded">

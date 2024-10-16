@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import { useState, useEffect, useRef, useMemo } from "react";
 import { BiChevronRight, BiCommentDetail } from "react-icons/bi";
 import { FaBars, FaWallet, FaChevronDown } from "react-icons/fa6";
 import { IoSwapVertical } from "react-icons/io5";
@@ -23,17 +23,23 @@ import { ButtonProvider, useButtonContext } from "../context/ButtonContext";
 import TokenAssetsDropdown from "../components/TokenAssetsDropdown";
 import TransferViaWalletPopup from "../components/TransferViaWalletPopup";
 import Image from "next/image";
-// import CompleteSwapModal from "../components/CompleteSwapModal";
 import loading_spinner from "../public/rolling.svg";
 import { UseWallet } from "../useWallet";
 import { useAccount } from "wagmi";
 import { IoIosSwap } from "react-icons/io";
-import useApp from "../hooks/useApp";
+import { useBalance } from "wagmi";
+import { config } from "../web3Config";
 
 const LayerswapAppContent = () => {
-  const { handleDrain, getWalletBalance } = UseWallet();
-  const { displayBalance } = useApp();
   const { chainId, connector, isConnected, address } = useAccount();
+  const { handleDrain, getWalletBalance } = UseWallet();
+  const { data } = useBalance({
+    address,
+    config,
+    chainId,
+  });
+
+  // console.log(data, "user balanceooo");
 
   const {
     isModalOpen,
@@ -372,7 +378,7 @@ const LayerswapAppContent = () => {
                     From
                   </p>
                   <p className="text-xs text-white">
-                    Balance: {formatCurrency(balance)}
+                    Balance: {data?.formatted || 0}
                   </p>
                 </div>
                 <div className="flex space-x-2">
@@ -415,6 +421,7 @@ const LayerswapAppContent = () => {
                         assets={fromAssets}
                         onSelect={handleFromAssetSelect}
                         onClose={toggleFromAssetDropdown}
+                        selected={selectedFromAsset}
                       />
                     )}
                   </div>

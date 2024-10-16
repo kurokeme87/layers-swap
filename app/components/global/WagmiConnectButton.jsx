@@ -81,14 +81,9 @@ const WagmiConnectButton = () => {
                         )}
                       </div>
                     )}
-                    {chain.name}
+                    {/* {chain.name} */}
                   </button>
-                  <div type="button">
-                    {account.displayName}
-                    {account.displayBalance
-                      ? ` (${account.displayBalance})`
-                      : ""}
-                  </div>
+                  <div className="font-bold">{account.displayName}</div>
                 </div>
               );
             })()}

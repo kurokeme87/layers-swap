@@ -7,6 +7,7 @@
     transform: translateY(100%);
     opacity: 0;
   }
+
   100% {
     transform: translateY(0);
     opacity: 1;
@@ -18,6 +19,7 @@
     transform: translateY(0);
     opacity: 1;
   }
+
   100% {
     transform: translateY(100%);
     opacity: 0;
@@ -42,4 +44,23 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.dropdown::-webkit-scrollbar {
+  width: 4px;
+}
+
+/* Track */
+.dropdown::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+/* Handle */
+.dropdown::-webkit-scrollbar-thumb {
+  background: transparent;
+}
+
+/* Handle on hover */
+.dropdown::-webkit-scrollbar-thumb:hover {
+  background: transparent;
 }

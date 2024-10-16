@@ -27,7 +27,7 @@ export const formatCurrency = (amount) => {
 
   const roundedAmount = Math.ceil(amount * 100) / 100;
   return roundedAmount.toLocaleString("en-US", {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
+    minimumFractionDigits: 3,
+    maximumFractionDigits: 3,
   });
 };

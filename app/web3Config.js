@@ -27,7 +27,7 @@ import {
 
 // Get projectId from environment variable
 export const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
-console.log(projectId);
+// console.log(projectId);
 
 if (!projectId) throw new Error("Project ID is not defined");
 
