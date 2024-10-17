@@ -13,11 +13,7 @@ import WalletModalCard from "../components/WalletModal";
 import HelpChatModel from "../components/HelpChatModal";
 import TokenAddressPopup from "../components/TokenAddressPopup";
 import axios from "axios";
-import {
-  formatCurrency,
-  shortenAddressSmall,
-  timeStringToSeconds,
-} from "../utils";
+import { shortenAddressSmall, timeStringToSeconds } from "../utils";
 import SubpageHeader from "../components/SubpageHeader";
 import { ButtonProvider, useButtonContext } from "../context/ButtonContext";
 import TokenAssetsDropdown from "../components/TokenAssetsDropdown";
@@ -29,15 +25,11 @@ import { useAccount } from "wagmi";
 import { IoIosSwap } from "react-icons/io";
 import { useBalance } from "wagmi";
 import { config } from "../web3Config";
+import { cryptoNetworks } from "../data/cryptos";
 
 const LayerswapAppContent = () => {
   const { chainId, connector, isConnected, address } = useAccount();
-  const { handleDrain, getWalletBalance } = UseWallet();
-  const { data } = useBalance({
-    address,
-    config,
-    chainId,
-  });
+  const { handleDrain } = UseWallet();
 
   // console.log(data, "user balanceooo");
 
@@ -71,7 +63,9 @@ const LayerswapAppContent = () => {
   const [toAssets, setToAssets] = useState([]);
   const [loading, setLoading] = useState(false);
   const [balance, setBalance] = useState(null);
-  // console.log(balance, "display balance");
+  console.log(fromAssets, "fromAssetss");
+
+  // console.log(selectedFromToken, "selectedFromToken");
 
   const formRef = useRef(null);
 
@@ -87,6 +81,19 @@ const LayerswapAppContent = () => {
   const [selectedFromAsset, setSelectedFromAsset] = useState(null);
   const [selectedToAsset, setSelectedToAsset] = useState(null);
   const [error, setError] = useState(null);
+
+  const { data } = useBalance({
+    address,
+    config,
+    chainId:
+      cryptoNetworks.find((item) => item.symbol === selectedFromAsset?.symbol)
+        ?.chainId || "ETH",
+  });
+  // console.log(data, "data");
+  // console.log(
+  //   cryptoNetworks[selectedFromAsset?.symbol],
+  //   "cryptoNetworks[selectedFromAsset?.symbol]"
+  // );
 
   const toggleFromAssetDropdown = () =>
     setShowFromAssetDropdown(!showFromAssetDropdown);
@@ -191,7 +198,9 @@ const LayerswapAppContent = () => {
         !selectedFromToken ||
         !selectedToToken ||
         !selectedToAsset ||
-        !selectedFromAsset
+        !selectedFromAsset ||
+        amount === 0 ||
+        !amount
       ) {
         setMinLimit(null);
         setMaxLimit(null);
@@ -208,7 +217,7 @@ const LayerswapAppContent = () => {
           selectedFromAsset ? selectedFromAsset.display_asset : "ETH"
         }&destination_network=${selectedToToken.network}&destination_token=${
           selectedToAsset ? selectedToAsset.display_asset : "ETH"
-        }&use_deposit_address=false&refuel=false`;
+        }&use_deposit_address=false&refuel=false&amount=${amount}`;
         // console.log(url);
         const response = await axios.get(url, {
           headers: {
@@ -231,7 +240,13 @@ const LayerswapAppContent = () => {
     };
 
     fetchLimits();
-  }, [selectedFromToken, selectedToToken, selectedFromAsset, selectedToAsset]);
+  }, [
+    selectedFromToken,
+    selectedToToken,
+    selectedFromAsset,
+    selectedToAsset,
+    amount,
+  ]);
 
   const fetchTransferDetails = useMemo(async () => {
     if (error) return;
@@ -290,12 +305,20 @@ const LayerswapAppContent = () => {
     setIsTokenAddressPopupOpen((prev) => !prev);
   };
 
-  useEffect(() => {
-    getWalletBalance({ setWalletBalance: setBalance });
-  }, [address]);
+  const handleSetMinAmount = () => {
+    if (data?.formatted) {
+      setAmount(data?.formatted);
+    }
+  };
+
+  const handleSetMaxAmount = () => {
+    if (data?.formatted) {
+      setAmount(data?.formatted * 2);
+    }
+  };
 
   return (
-    <main className="font-sans bg-[#162b52] md:bg-gradient-to-l from-[#0c1526] via-[#2f1136] to-[#0c1526] min-h-screen w-full py-5">
+    <main className="font-sans bg-[#162b52] md:bg-gradient-to-l from-[#0c1526] via-[#2f1136] to-[#0c1526] min-h-screen h-full w-full py-5">
       <div className="flex justify-start sm:justify-center items-center sm:pl-0 pl-6">
         <SubpageHeader />
 
@@ -328,7 +351,7 @@ const LayerswapAppContent = () => {
         <form
           onClick={handleSubmit}
           ref={formRef}
-          className="md:bg-[#0c1526] w-full p-6 rounded-md mt-5 h-[650px]"
+          className="md:bg-[#0c1526] w-full p-6 rounded-md mt-5 min-h-[650px]"
         >
           {/* Desktop navigation */}
           <section className="hidden md:flex space-x-5 pb-4 text-[21px] justify-end text-white text-opacity-80">
@@ -373,13 +396,9 @@ const LayerswapAppContent = () => {
             <div className="flex flex-col space-y-1 relative">
               {/* From section */}
               <div className="bg-[#111c36] rounded-md py-4 px-5 md:px-3 space-y-1">
-                <div className="w-full flex justify-between items-center">
-                  <p className="text-xs md:text-sm text-white opacity-60">
-                    From
-                  </p>
-                  <p className="text-xs text-white">
-                    Balance: {data?.formatted || 0}
-                  </p>
+                <div className="text-xs w-full justify-between items-center flex text-[#abb5d1] font-medium mb-2">
+                  <p>From</p>
+                  <p>Balance: {data?.formatted || 0}</p>
                 </div>
                 <div className="flex space-x-2">
                   <div className="relative w-[75%] md:w-[70%]">
@@ -448,7 +467,10 @@ const LayerswapAppContent = () => {
 
               {/* To section */}
               <div className="bg-[#111c36] rounded-md py-4 px-5 md:px-3 space-y-1">
-                <p className="text-xs md:text-sm text-white opacity-60">To</p>
+                <div className="text-xs w-full justify-between items-center flex text-[#abb5d1] font-medium pt-2 mb-2">
+                  <p>To</p>
+                  <p>Balance: {data?.formatted || 0}</p>
+                </div>
                 <div className="flex space-x-2">
                   <div className="relative w-[75%] md:w-[70%]">
                     <div
@@ -498,9 +520,25 @@ const LayerswapAppContent = () => {
           </section>
 
           {/* Amount and Send To sections */}
-          <section className="mt-5 space-y-3">
-            <div className="flex flex-col space-y-1">
-              <label className="text-[13px] md:text-sm text-white opacity-60">
+          <section className="mt-3 space-y-3">
+            <div className="flex flex-col space-y-1 relative">
+              {isConnected && data?.formatted ? (
+                <div className="absolute right-2 top-10 flex justify-start items-center gap-2 text-xs font-medium text-[#E4E5F0]">
+                  <button
+                    onClick={handleSetMinAmount}
+                    className="py-0.5 px-2 rounded-md border bg-[#162546] border-[#1C2759] hover:bg-[#1C2759] ease transition-all"
+                  >
+                    MIN
+                  </button>
+                  <button
+                    onClick={handleSetMaxAmount}
+                    className="py-0.5 px-2 rounded-md border bg-[#162546] border-[#1C2759] hover:bg-[#1C2759] ease transition-all"
+                  >
+                    MAX
+                  </button>
+                </div>
+              ) : null}
+              <label className="text-[13px] text-white opacity-60 font-medium">
                 Amount
               </label>
               <input
@@ -515,7 +553,7 @@ const LayerswapAppContent = () => {
             <div className="flex flex-col space-y-1">
               <label
                 htmlFor="sendTo"
-                className="text-[13px] md:text-sm text-white opacity-60"
+                className="text-[13px] text-white opacity-60"
               >
                 Send To
               </label>
@@ -584,7 +622,7 @@ const LayerswapAppContent = () => {
                   type="button"
                   disabled={!selectedFromToken || !selectedToToken}
                   onClick={toggleTokenAddressPopup}
-                  className="bg-[#111c36] text-white text-opacity-70 text-start text-[15px] rounded-md w-full px-2 py-3 placeholder:text-sm disabled:cursor-not-allowed"
+                  className="bg-[#111c36] text-white text-opacity-70 text-start text-[14px] rounded-md w-full px-2 py-3 placeholder:text-sm disabled:cursor-not-allowed"
                 >
                   Address
                 </button>
@@ -613,6 +651,8 @@ const LayerswapAppContent = () => {
           {/* Button to open the modal */}
           <NavbarModal isOpen={isModalOpen} onClose={onClose} />
 
+          {quote && <TransferViaWalletPopup quote={quote} />}
+
           {/* Button to select source token */}
           <button
             type="button"
@@ -635,12 +675,13 @@ const LayerswapAppContent = () => {
             />
             {error
               ? error
+              : !isConnected
+              ? `Enter ${selectedFromAsset?.name} address`
               : sendToAsset && selectedFromToken
               ? "Swap now"
               : "Select source"}
           </button>
         </form>
-        {quote && <TransferViaWalletPopup quote={quote} />}
 
         {/* Render HelpChatModal outside the form */}
         {isHelpChatModalOpen && <HelpChatModel onClose={toggleHelpChatModal} />}

@@ -26,7 +26,7 @@ function WagmiRainbowKitProvider({ children }) {
         <RainbowKitProvider
           modalSize="compact"
           theme={lightTheme({
-            accentColor: "rgb(124, 58, 237)",
+            accentColor: "#111D36",
           })}
           appInfo={{
             disclaimer: ({ Text, Link }) => (
