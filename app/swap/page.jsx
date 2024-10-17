@@ -26,6 +26,7 @@ import { IoIosSwap } from "react-icons/io";
 import { useBalance } from "wagmi";
 import { config } from "../web3Config";
 import { cryptoNetworks } from "../data/cryptos";
+import ConnectorIconModal from "../components/ConnectorIconModal";
 
 const LayerswapAppContent = () => {
   const { chainId, connector, isConnected, address } = useAccount();
@@ -317,6 +318,7 @@ const LayerswapAppContent = () => {
     }
   };
 
+  
   return (
     <main className="font-sans bg-[#162b52] md:bg-gradient-to-l from-[#0c1526] via-[#2f1136] to-[#0c1526] min-h-screen h-full w-full py-5">
       <div className="flex justify-start sm:justify-center items-center sm:pl-0 pl-6">
@@ -355,6 +357,8 @@ const LayerswapAppContent = () => {
         >
           {/* Desktop navigation */}
           <section className="hidden md:flex space-x-5 pb-4 text-[21px] justify-end text-white text-opacity-80">
+            {isConnected ? <ConnectorIconModal /> : null}
+
             <button
               type="button"
               onClick={() => handleButtonClick("wallet", toggleWalletModal)}

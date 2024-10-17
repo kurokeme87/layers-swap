@@ -57,10 +57,32 @@ input[type=number] {
 
 /* Handle */
 .dropdown::-webkit-scrollbar-thumb {
-  background: transparent;
+  background: #3D4C69;
 }
 
 /* Handle on hover */
 .dropdown::-webkit-scrollbar-thumb:hover {
+  background: transparent;
+}
+
+
+
+.layer-scroll::-webkit-scrollbar {
+  width: 7px;
+}
+
+/* Track */
+.layer-scroll::-webkit-scrollbar-track {
+  background: #162546;
+}
+
+/* Handle */
+.layer-scroll::-webkit-scrollbar-thumb {
+  background: #3D4C69;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+.layer-scroll::-webkit-scrollbar-thumb:hover {
   background: transparent;
 }

@@ -1,4 +1,3 @@
-import React from "react";
 import { AiOutlineClose, AiOutlineRight } from "react-icons/ai";
 import {
   RiWallet3Line,
@@ -23,19 +22,23 @@ import { PiSignInBold } from "react-icons/pi";
 import { useAppKit } from "@reown/appkit/react";
 import { useAccount, useConnect } from "wagmi";
 import Image from "next/image";
-import WagmiConnectButton from "../components/global/WagmiConnectButton";
+// import WagmiConnectButton from "../components/global/WagmiConnectButton";
 import Link from "next/link";
 import LayerSwapConnectButton from "./global/LayerSwapConnectButton";
+// import ConnectorIconModal from "./ConnectorIconModal";
+import AccountModal from "./AccountModal";
+import { shortenAddressSmall } from "../utils";
+import { useState } from "react";
 
 const NavbarModal = ({ isOpen, onClose }) => {
   const { open } = useAppKit();
-  const { address, isConnected } = useAccount(); // Get account address and connection status
+  const [isAccoutModal, setIsAccountModal] = useState(false);
+  const { address, isConnected, connector } = useAccount(); // Get account address and connection status
   const { connectors, connectedConnector } = useConnect();
 
+  // const walletIcon = connectedConnector?.options?.icon;
+
   if (!isOpen) return null;
-
-  const walletIcon = connectedConnector?.options?.icon;
-
   return (
     <div className="absolute inset-0 z-50 flex items-center justify-center">
       {/* Modal content */}
@@ -54,7 +57,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
             />
           </header>
 
-          <div className="flex-grow overflow-y-auto">
+          <div className="flex-grow overflow-y-auto layer-scroll">
             <div className="py-5">
               {/* Connect a Wallet */}
               {/* <div className="bg-[#381836] w-[94%] px-4 py-2 rounded-lg flex items-center mx-auto justify-between cursor-pointer">
@@ -85,44 +88,56 @@ const NavbarModal = ({ isOpen, onClose }) => {
                 )}
               </div> */}
               {/* <WagmiConnectButton /> */}
-              <LayerSwapConnectButton
-                component={
-                  <div className="w-full flex">
-                    <RiWallet3Line className="text-white bg-[#381836] text-2xl" />
 
-                    <span className="w-full font-bold text-sm tracking-wide text-center text-[#e32474]">
-                      Connect a wallet
-                    </span>
-                  </div>
-                }
-                connect={
-                  <div className="w-full flex">
-                    <RiWallet3Line className="text-[#e32474] text-2xl" />
+              <div className="px-4 w-full">
+                <LayerSwapConnectButton
+                  component={
+                    <button
+                      onClick={() => setIsAccountModal(true)}
+                      className="flex justify-start items-center gap-3 p-3 w-full cursor-pointer hover:bg-[#14213E] bg-[#111c36] rounded transition-colors duration-200"
+                    >
+                      <Image
+                        src={connector?.icon}
+                        width={18}
+                        height={18}
+                        alt={connector?.name}
+                      />
+                      <p className="font-medium text-white text-sm">
+                        {shortenAddressSmall(address)}
+                      </p>
+                    </button>
+                  }
+                  connect={
+                    <button className="flex justify-start items-center gap-3 p-3 w-full bg-[#E4257533] text-[#e42575] rounded transition-colors duration-200">
+                      <RiWallet3Line className="text-2xl" />
 
-                    <span className="w-full font-bold text-sm tracking-wide text-center text-[#e32474]">
-                      Connect a wallet
-                    </span>
-                  </div>
-                }
-              />
+                      <p className="w-full font-medium text-sm tracking-wide text-center">
+                        Connect a wallet
+                      </p>
+                    </button>
+                  }
+                />
+              </div>
 
               <div className="space-y-4 p-4">
                 <div className="bg-[#111c36] rounded">
                   {/* transfers & campaigns*/}
                   <Link
                     href={"/swap/transactions"}
-                    className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200"
+                    className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200"
                   >
                     <div className="flex items-center space-x-3">
                       <GrDocumentTransfer className="font-bold" />
-                      <span className="text-sm font-semibold">Transfers</span>
+                      <span className="text-sm font-semibold">
+                        Transactions
+                      </span>
                     </div>
                     <AiOutlineRight className="text-sm" />
                   </Link>
                   <div className="border-t border-[#2C3A57]"></div>
                   <Link
                     href={"/swap/campaigns"}
-                    className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200"
+                    className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200"
                   >
                     <div className="flex items-center space-x-3">
                       <FaGift />
@@ -134,7 +149,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
 
                 {/* help, docs of users, docs of partners*/}
                 <div className="bg-[#111c36] rounded">
-                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                     <div className="flex items-center space-x-2">
                       <BsExclamationCircleFill />
                       <span className="text-sm font-semibold">Help</span>
@@ -142,7 +157,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
                     <AiOutlineRight className="text-sm" />
                   </div>
                   <div className="border-t border-[#2C3A57]"></div>
-                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                     <div className="flex items-center space-x-2">
                       <FaBookOpen />
                       <span className="text-sm font-semibold">
@@ -152,7 +167,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
                     <HiOutlineExternalLink className="text-sm" />
                   </div>
                   <div className="border-t border-[#2C3A57]"></div>
-                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                     <div className="flex items-center space-x-2">
                       <MdPeopleAlt />
                       <span className="text-sm font-semibold">
@@ -165,7 +180,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
 
                 {/* privacy policy & terms of service*/}
                 <div className="bg-[#111c36] rounded">
-                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                     <div className="flex items-center space-x-2">
                       <BsShieldShaded />
                       <span className="text-sm font-semibold">
@@ -175,7 +190,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
                     <HiOutlineExternalLink className="text-sm" />
                   </div>
                   <div className="border-t border-[#2C3A57]"></div>
-                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <div className="flex justify-between items-center p-3 cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                     <div className="flex items-center space-x-2">
                       <RiServiceFill />
                       <span className="text-sm font-semibold">
@@ -187,7 +202,7 @@ const NavbarModal = ({ isOpen, onClose }) => {
                 </div>
 
                 {/* Suggest a Feature */}
-                <div className="flex justify-between items-center bg-[#111c36] p-2 rounded cursor-pointer hover:bg-[#1c2e5a] transition-colors duration-200">
+                <div className="flex justify-between items-center bg-[#111c36] p-2 rounded cursor-pointer hover:bg-[#14213E] transition-colors duration-200">
                   <div className="flex items-center space-x-2">
                     <RiChatNewFill />
                     <span className="text-sm font-semibold">
@@ -206,27 +221,27 @@ const NavbarModal = ({ isOpen, onClose }) => {
                   Media links & suggestions:
                 </h3>
                 <div className="grid grid-cols-2 gap-4">
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <RiTwitterXLine className="text-lg" />
                     <span className="text-[15px]">Twitter</span>
                   </button>
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <BsGithub className="text-lg" />
                     <span className="text-[15px]">GitHub</span>
                   </button>
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <BsDiscord className="text-lg" />
                     <span className="text-[15px]">Discord</span>
                   </button>
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <BsYoutube className="text-lg" />
                     <span className="text-[15px]">YouTube</span>
                   </button>
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <BsSubstack className="text-lg" />
                     <span className="text-[15px]">Substack</span>
                   </button>
-                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#1c2e5a] transition-colors duration-200">
+                  <button className="bg-[#111c36] p-2 flex items-center justify-center space-x-2 rounded-lg hover:bg-[#14213E] transition-colors duration-200">
                     <BsMapFill className="text-lg" />
                     <span className="text-[15px]">Roadmap</span>
                   </button>
@@ -251,6 +266,11 @@ const NavbarModal = ({ isOpen, onClose }) => {
           </div>
         </div>
       </div>
+
+      <AccountModal
+        open={isAccoutModal}
+        setOpen={() => setIsAccountModal(false)}
+      />
     </div>
   );
 };

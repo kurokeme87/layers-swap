@@ -3,7 +3,7 @@ import { useEffect } from "react";
 // import { RiWallet3Line } from "react-icons/ri";
 // import useApp from "../../hooks/useApp";
 
-const LayerSwapConnectButton = ({ component, connect }) => {
+const LayerSwapConnectButton = ({ component, connect, isWithAccount }) => {
   // const { setDisplayBalance } = useApp();
   return (
     <ConnectButton.Custom>
@@ -14,7 +14,6 @@ const LayerSwapConnectButton = ({ component, connect }) => {
         openChainModal,
         openConnectModal,
         authenticationStatus,
-        onSuccessCallback,
         mounted,
       }) => {
         // Note: If your app doesn't use authentication, you
@@ -25,11 +24,6 @@ const LayerSwapConnectButton = ({ component, connect }) => {
           chain &&
           (!authenticationStatus || authenticationStatus === "authenticated");
 
-        // useEffect(() => {
-        //   if (mounted) {
-        //     onSuccessCallback(account.displayBalance);
-        //   }
-        // }, [mounted]);
         return (
           <div
             role="button"
@@ -46,7 +40,15 @@ const LayerSwapConnectButton = ({ component, connect }) => {
           >
             {(() => {
               if (!connected) {
-                return <button onClick={openConnectModal}>{connect}</button>;
+                return (
+                  <div
+                    role="button"
+                    className="w-full"
+                    onClick={isWithAccount ? openConnectModal : null}
+                  >
+                    {connect}
+                  </div>
+                );
               }
               if (connected) {
                 return (
