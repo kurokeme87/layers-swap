@@ -1,27 +1,64 @@
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { FaBitcoin, FaEthereum } from "react-icons/fa6";
 import { GiRainbowStar } from "react-icons/gi";
 import { IoIosCheckmarkCircle, IoMdAdd } from "react-icons/io";
 import { useTokenContext } from "../context/TokenContext";
 import LayerSwapConnectButton from "../components/global/LayerSwapConnectButton";
-import { useAccount, useConnect } from "wagmi";
+import { useAccount } from "wagmi";
 import { shortenAddressSmall } from "../utils";
 import Image from "next/image";
-import Web3 from "web3";
+// import Web3 from "web3";
+import { ethers } from "ethers";
 
 const TokenAddressPopup = ({ isOpen, onClose }) => {
   const MetaMask = "https://metamask.io/images/metamask-logo.png";
   const WalletConnect = "https://walletconnect.org/walletconnect-logo.png";
   const [allAccounts, setAccounts] = useState([]);
   const { sendToAdress, setSendToAdress, setSendToAsset } = useTokenContext();
+  const [localAddress, setLocalAddress] = useState("");
   const { isConnected, connector, address } = useAccount();
+
+  const [isValid, setIsValid] = useState(null);
+
+  const validateAddress = (input) => {
+    // Use ethers.js to check if it's a valid Ethereum address
+    if (ethers.utils.isAddress(input)) {
+      setIsValid(true);
+    } else {
+      setIsValid(false);
+    }
+  };
+
+  const handleChange = (e) => {
+    const input = e.target.value;
+    // setSendToAdress(input);
+    setLocalAddress(input);
+    validateAddress(input);
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (localAddress?.length > 1 && isValid) {
+        setSendToAdress(localAddress);
+        onClose();
+        setIsValid(true);
+        if (!allAccounts.some((item) => item === localAddress)) {
+          setAccounts((prev) => {
+            const newData = [...prev, localAddress];
+            return newData;
+          });
+        }
+      } else {
+        setIsValid(false);
+      }
+    }
+  };
+
+  console.log(allAccounts, "all accounts");
 
   // Get account and connection information
   const { connector: activeConnector } = useAccount();
-
-  // List of wallet connectors (MetaMask, WalletConnect, etc.)
-  // const { connect, connectors, pendingConnector } = useConnect();
 
   // Function to dynamically get provider (connector) info
   const getProviderInfo = () => {
@@ -48,24 +85,15 @@ const TokenAddressPopup = ({ isOpen, onClose }) => {
         });
 
         // Create a Web3 instance
-        const web3 = new Web3(window.ethereum);
-
-        // Log all the connected accounts (wallet addresses)
-        // console.log("Connected accounts:", accounts);
+        // const web3 = new Web3(window.ethereum);
 
         // Optionally, retrieve the balance for each connected account
-        for (const account of accounts) {
-          const balance = await web3.eth.getBalance(account);
-          // console.log(
-          //   `Account: ${account}, Balance: ${web3.utils.fromWei(
-          //     balance,
-          //     "ether"
-          //   )} ETH`
-          // );
-        }
+        // for (const account of accounts) {
+        //   const balance = await web3.eth.getBalance(account);
+        // }
         setAccounts(accounts); // Return all connected accounts (wallets)
       } catch (error) {
-        // console.error("Error fetching connected wallets:", error);
+        console.error("Error fetching connected wallets:", error);
       }
     } else {
       console.error(
@@ -99,13 +127,22 @@ const TokenAddressPopup = ({ isOpen, onClose }) => {
                 <AiOutlineClose />
               </button>
             </div>
-            <div className="flex justify-center mb-4">
+            <div className="w-full justify-center mb-4">
               <input
-                type="text"
+                type="search"
+                value={localAddress}
                 placeholder="Send Address"
-                onChange={(e) => setSendToAdress(e.target.value)}
+                onKeyDown={handleKeyDown}
+                onChange={handleChange}
                 className="bg-[#111c36] rounded-md w-[100%] p-3 placeholder:text-sm text-white focus:outline-none focus:ring-2 focus:ring-[#e32474]"
               />
+              <p
+                className={`${
+                  localAddress.length > 0 && !isValid ? "visible" : "invisible"
+                } text-[#e32474] text-xs w-full`}
+              >
+                Enter a valid Ethereum address
+              </p>
             </div>
             {isConnected ? null : (
               <div className="flex justify-center">

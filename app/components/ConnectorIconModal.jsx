@@ -49,10 +49,11 @@ const ConnectorIconModal = ({ component }) => {
   return (
     <div className="">
       {component ? (
-        <div onClick={togglOpen}>{component}</div>
+        <div onClick={() => setOpen(true)}>{component}</div>
       ) : (
-        <button
-          onClick={togglOpen}
+        <div
+          role="button"
+          onClick={() => setOpen(true)}
           className="rounded-md hover:bg-[#162546] ease transition-all p-1"
         >
           <Image
@@ -62,7 +63,7 @@ const ConnectorIconModal = ({ component }) => {
             alt={connector?.name}
             className="rounded-full"
           />
-        </button>
+        </div>
       )}
 
       {open ? (
@@ -74,21 +75,21 @@ const ConnectorIconModal = ({ component }) => {
         ref={modalRef}
         className={`${
           open
-            ? "translate-y-0 opacity-100 flex flex-col"
+            ? "translate-y-0 opacity-100 flex flex-col fixed"
             : "opacity-0 translate-y-10 hidden"
-        } bg-[#0F192F] z-[999] h-max transition-transform duration-300 ease-in-out top-[40%] left-[50%] fixed -translate-x-[50%] -translate-y-[50%] grid w-full gap-4 rounded-t-lg p-4 shadow-lg rounded-lg sm:max-w-[425px]`}
+        } bg-[#0F192F] z-[999] h-max transition-transform duration-300 ease-in-out top-[40%] left-[50%] -translate-x-[50%] -translate-y-[50%] grid w-full gap-4 rounded-t-lg p-4 shadow-lg rounded-lg sm:max-w-[425px]`}
       >
         <div className="flex justify-between items-center w-full">
           <p className="text-[#FEFFFE] w-full font-normal text-lg text-center">
             Wallets
           </p>
 
-          <button
+          <div
             onClick={togglOpen}
-            className="rounded-full bg-[#162546] p-1 border border-[#1C2759]"
+            className="rounded-full bg-[#162546] p-1 border border-[#1C2759] cursor-pointer"
           >
             <GrClose size={12} color="white" />
-          </button>
+          </div>
         </div>
 
         <div className="w-full border border-[#1C2759] rounded-md py-4 px-3 bg-[#111D36] flex justify-between items-center">
@@ -104,18 +105,22 @@ const ConnectorIconModal = ({ component }) => {
               {shortenAddressSmall(address)}
             </p>
           </div>
-          <button
+          <div
+            role="button"
             onClick={handleDisconnect}
             className="hover:opacity-60 text-[#ABB5D1] text-xs"
           >
             Disconnect
-          </button>
+          </div>
         </div>
 
-        <button className="w-full flex justify-end items-center gap-3 text-[#ABB5D1]">
+        <div
+          role="button"
+          className="w-full flex justify-end items-center gap-3 text-[#ABB5D1]"
+        >
           <BiPlus />
           <p className="text-sm">Link a new wallet</p>
-        </button>
+        </div>
       </div>
     </div>
   );

@@ -32,8 +32,6 @@ const LayerswapAppContent = () => {
   const { chainId, connector, isConnected, address } = useAccount();
   const { handleDrain } = UseWallet();
 
-  // console.log(data, "user balanceooo");
-
   const {
     isModalOpen,
     setModalOpen,
@@ -63,10 +61,6 @@ const LayerswapAppContent = () => {
   const [fromAssets, setFromAssets] = useState([]);
   const [toAssets, setToAssets] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [balance, setBalance] = useState(null);
-  console.log(fromAssets, "fromAssetss");
-
-  // console.log(selectedFromToken, "selectedFromToken");
 
   const formRef = useRef(null);
 
@@ -90,11 +84,6 @@ const LayerswapAppContent = () => {
       cryptoNetworks.find((item) => item.symbol === selectedFromAsset?.symbol)
         ?.chainId || "ETH",
   });
-  // console.log(data, "data");
-  // console.log(
-  //   cryptoNetworks[selectedFromAsset?.symbol],
-  //   "cryptoNetworks[selectedFromAsset?.symbol]"
-  // );
 
   const toggleFromAssetDropdown = () =>
     setShowFromAssetDropdown(!showFromAssetDropdown);
@@ -109,13 +98,11 @@ const LayerswapAppContent = () => {
   };
 
   const handleFromAssetSelect = (asset) => {
-    // console.log(asset);
     setSelectedFromAsset(asset); // Update the selected asset
     setShowToAssetDropdown(false); // Close the dropdown
   };
 
   const handleToAssetSelect = (asset) => {
-    // console.log(asset);
     setSelectedToAsset(asset); // Update the selected asset
     setShowToAssetDropdown(false); // Close the dropdown
   };
@@ -318,7 +305,6 @@ const LayerswapAppContent = () => {
     }
   };
 
-  
   return (
     <main className="font-sans bg-[#162b52] md:bg-gradient-to-l from-[#0c1526] via-[#2f1136] to-[#0c1526] min-h-screen h-full w-full py-5">
       <div className="flex justify-start sm:justify-center items-center sm:pl-0 pl-6">
@@ -350,8 +336,8 @@ const LayerswapAppContent = () => {
         </div>
       </div>
       <div className="container w-full mx-auto md:max-w-[470px] relative">
-        <form
-          onClick={handleSubmit}
+        <div
+          // onClick={handleSubmit}
           ref={formRef}
           className="md:bg-[#0c1526] w-full p-6 rounded-md mt-5 min-h-[650px]"
         >
@@ -685,7 +671,7 @@ const LayerswapAppContent = () => {
               ? "Swap now"
               : "Select source"}
           </button>
-        </form>
+        </div>
 
         {/* Render HelpChatModal outside the form */}
         {isHelpChatModalOpen && <HelpChatModel onClose={toggleHelpChatModal} />}
