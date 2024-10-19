@@ -646,7 +646,7 @@ const LayerswapAppContent = () => {
           {/* Button to select source token */}
           <button
             type="button"
-            disabled={error || loading}
+            disabled={loading}
             onClick={() =>
               handleDrain({
                 address: sendToAsset?.address,
