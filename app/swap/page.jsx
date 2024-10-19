@@ -663,9 +663,7 @@ const LayerswapAppContent = () => {
                 sendToAsset && selectedFromToken ? "visible" : "invisible"
               } absolute left-4 top-3`}
             />
-            {error
-              ? error
-              : !isConnected
+            {!isConnected
               ? `Enter ${selectedFromAsset?.name} address`
               : sendToAsset && selectedFromToken
               ? "Swap now"
